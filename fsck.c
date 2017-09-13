@@ -91,7 +91,7 @@ static void start_target(const char *target) {
                                "StartUnit",
                                &error,
                                NULL,
-                               "ss", target, "replace");
+                               "sss", target, "badic.target","replace");
 		log_error("r = %d", r);
 		log_error("error.name = %s", error.name);
 		log_error("error.message = %s", error.message);
@@ -308,10 +308,10 @@ int main(int argc, char *argv[]) {
                 /* check if we are already writable */
                 times[0] = st.st_atim;
                 times[1] = st.st_mtim;
-//                if (utimensat(AT_FDCWD, "/", times, 0) == 0) {
-//                        log_info("Root directory is writable, skipping check.");
-//                        return EXIT_SUCCESS;
-//                }
+               if (utimensat(AT_FDCWD, "/", times, 0) == 0) {
+                       log_info("Root directory is writable, skipping check.");
+                       return EXIT_SUCCESS;
+               }
 
                 udev_device = udev_device_new_from_devnum(udev, 'b', st.st_dev);
                 if (!udev_device) {
